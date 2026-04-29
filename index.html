@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist výstupů vizuální identity — Matouš Kos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #000;
+    --paper: #fff;
+    --muted: #6b6b6b;
+    --hairline: #d4d4d4;
+    --selection: #f0f0f0;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 15px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'IBM Plex Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    background: var(--paper);
+    color: var(--ink);
+    margin: 0;
+    padding: 0;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 48px 80px;
+  }
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--ink);
+    margin: 28px 0;
+  }
+  hr.rule.thick {
+    border-top: 2px solid var(--ink);
+  }
+  hr.rule.hair {
+    border-top: 1px solid var(--hairline);
+    margin: 16px 0;
+  }
+
+  /* ── Header ─────────────────────────────────────────── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .logo {
+    width: 56px;
+    height: 56px;
+    display: block;
+  }
+  .identity {
+    text-align: right;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .identity .name { font-weight: 500; }
+  .identity .role { color: var(--muted); }
+
+  /* ── Title block ─────────────────────────────────────── */
+  .title-block { margin: 32px 0 24px; }
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .meta-line {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .meta-line span + span::before {
+    content: ' / ';
+    color: var(--hairline);
+    margin: 0 4px;
+  }
+
+  /* ── Intro prose ─────────────────────────────────────── */
+  .intro {
+    font-size: 13px;
+    line-height: 1.75;
+    margin: 0 0 8px;
+    max-width: 64ch;
+  }
+  .intro + .intro { margin-top: 12px; }
+
+  /* ── Client fields ───────────────────────────────────── */
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .field { display: flex; flex-direction: column; }
+  .field label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .field input {
+    border: none;
+    border-bottom: 1px solid var(--ink);
+    padding: 8px 0;
+    font-family: inherit;
+    font-size: 13px;
+    background: transparent;
+    color: var(--ink);
+  }
+  .field input:focus { outline: none; }
+  .field input::placeholder { color: #b0b0b0; }
+
+  /* ── Filter controls ─────────────────────────────────── */
+  .controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .controls .lbl { color: var(--muted); }
+  .filter-group {
+    display: inline-flex;
+    border: 1px solid var(--ink);
+  }
+  .filter-btn {
+    background: var(--paper);
+    color: var(--ink);
+    border: none;
+    border-right: 1px solid var(--ink);
+    padding: 9px 14px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+  .filter-btn:last-child { border-right: none; }
+  .filter-btn:hover { background: var(--selection); }
+  .filter-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .counter {
+    margin-left: auto;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .counter .num { font-weight: 500; }
+  .counter .total { color: var(--muted); }
+
+  /* ── Sections & items ────────────────────────────────── */
+  .section { margin: 0; }
+  .section.hidden { display: none; }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    letter-spacing: -0.005em;
+  }
+  .section-fn {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .section-counter {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+
+  .items { display: flex; flex-direction: column; }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--hairline);
+    transition: background 0.08s;
+  }
+  .item:hover { background: var(--selection); margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
+  .item.hidden { display: none; }
+  .item:last-child { border-bottom: none; }
+  .item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    margin: 3px 0 0 0;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .item input[type="checkbox"]:checked { background: var(--ink); }
+  .item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border-right: 2px solid var(--paper);
+    border-bottom: 2px solid var(--paper);
+    transform: rotate(45deg);
+  }
+  .item-content {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.5;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .item-text { flex: 1; min-width: 0; }
+  .item-name { font-weight: 500; }
+  .item-desc { color: var(--muted); }
+  .item-tag {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--hairline);
+    padding: 2px 6px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  /* ── Semantic differential (tone) ────────────────────── */
+  .tone-section { margin: 0; }
+  .tone-section .section-head { margin-bottom: 20px; }
+  .tone-rows { display: flex; flex-direction: column; }
+  .tone-row {
+    display: grid;
+    grid-template-columns: 1fr 240px 1fr;
+    gap: 20px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .tone-row:last-child { border-bottom: none; }
+  .tone-label {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .tone-label.left { text-align: right; }
+  .tone-label.right { text-align: left; }
+  .tone-track {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    height: 24px;
+    padding: 0 6px;
+  }
+  .tone-track::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 50%;
+    height: 1px;
+    background: var(--ink);
+    z-index: 0;
+  }
+  .tone-track input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 14px;
+    height: 14px;
+  }
+  .tone-dot {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1;
+    position: relative;
+    transition: background 0.1s, transform 0.1s;
+  }
+  .tone-dot:hover { background: var(--selection); }
+  .tone-dot.active { background: var(--ink); }
+
+  /* ── Summary ─────────────────────────────────────────── */
+  /* (summary box odstraněn — bez bloku) */
+
+  /* ── Notes ───────────────────────────────────────────── */
+  .notes-area { margin: 24px 0; }
+  .notes-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+  }
+  .notes-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.55;
+    resize: vertical;
+    color: var(--ink);
+  }
+  .notes-textarea:focus { outline: none; }
+  .notes-textarea::placeholder { color: #b0b0b0; }
+
+  /* ── Action buttons ──────────────────────────────────── */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .btn {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 13px 22px;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.1s, color 0.1s;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--paper); color: var(--ink); }
+
+  /* ── Footer ──────────────────────────────────────────── */
+  .footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ink);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ── Toast ───────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 1000;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ── Print styles ────────────────────────────────────── */
+  @media print {
+    @page { margin: 16mm; size: A4; }
+    body { font-size: 10px; line-height: 1.4; }
+    .page { padding: 0; max-width: none; }
+    .controls, .actions, .toast { display: none !important; }
+    .filter-group { display: none !important; }
+    .section, .item { page-break-inside: avoid; break-inside: avoid; }
+    .item { padding: 4px 0; }
+    .item:hover { background: transparent; margin: 0; padding: 4px 0; }
+    .item input[type="checkbox"] {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    h1 { font-size: 20px; }
+    .section-title { font-size: 14px; }
+    .item-content { font-size: 10px; }
+    .item-tag { font-size: 7px; }
+    hr.rule { margin: 14px 0; }
+    .footer { margin-top: 24px; }
+    .notes-textarea { border: 1px solid var(--ink); }
+    .tone-row { padding: 8px 0; grid-template-columns: 1fr 220px 1fr; }
+    .tone-dot.active {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .page { padding: 32px 24px 60px; }
+    .fields { grid-template-columns: 1fr; gap: 16px; }
+    .controls { gap: 12px; }
+    .counter { margin-left: 0; width: 100%; }
+    h1 { font-size: 22px; }
+    .item-content { flex-direction: column; gap: 4px; }
+    .item-tag { align-self: flex-start; }
+    .tone-row { grid-template-columns: 90px 1fr 90px; gap: 8px; }
+    .tone-label { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════════════════ -->
+  <header class="header">
+    <svg class="logo" viewBox="0 0 283.4645669 283.4645669" xmlns="http://www.w3.org/2000/svg" aria-label="Matouš Kos logo">
+      <polygon points="141.6910336 141.6442204 141.6521222 141.6442204 274.4583005 274.3990264 274.4583005 141.6442204 274.4972119 141.6442204 274.4972119 8.8893736 141.6910336 141.6442204"/>
+      <polygon points="8.9944517 8.8893736 8.9944517 141.6442204 8.9944517 274.3990264 141.80063 274.3990264 141.80063 141.6442204 8.9944517 8.8893736"/>
+      <path d="M277.1717023,277.0690318H6.3198231V6.2191038h270.8518791v270.8499281ZM11.668804,271.7287633h260.1539175V11.5599012H11.668804v260.1688621Z"/>
+    </svg>
+    <div class="identity">
+      <div class="name">Matouš Kos</div>
+      <div class="role">2D / 3D designer</div>
+    </div>
+  </header>
+
+  <hr class="rule thick">
+
+  <!-- ═══ TITLE BLOCK ══════════════════════════════════════════════════ -->
+  <div class="title-block">
+    <h1>Checklist výstupů vizuální identity</h1>
+    <p class="subtitle">Identifikace toho, co od projektu očekáváte</p>
+    <p class="meta-line">
+      <span>v1.0</span><span>cs</span><span>vyplnitelný formulář</span>
+    </p>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ═══ INTRO ════════════════════════════════════════════════════════ -->
+  <p class="intro">
+    Tento checklist slouží k identifikaci výstupů, které od vizuální identity očekáváte. Je rozdělený do pěti vrstev podle hloubky v brandu — od jádra (logo, písmo, barvy) až po rozšířený svět značky (packaging, interiér, merch).
+  </p>
+  <p class="intro">
+    Položky můžete filtrovat podle média (tisk / digitál / prostor) a po výběru poslat shrnutí přímo e-mailem nebo si formulář uložit jako PDF. Není potřeba vyplňovat všechny vrstvy — vyberte si to, co je pro váš projekt relevantní.
+  </p>
+
+  <hr class="rule">
+
+  <!-- ═══ CLIENT FIELDS ════════════════════════════════════════════════ -->
+  <div class="fields">
+    <div class="field">
+      <label for="client-name">Klient / projekt</label>
+      <input type="text" id="client-name" placeholder="Název firmy nebo projektu" autocomplete="organization">
+    </div>
+    <div class="field">
+      <label for="client-email">Váš e-mail</label>
+      <input type="email" id="client-email" placeholder="vy@firma.cz" autocomplete="email">
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ═══ FILTER CONTROLS ══════════════════════════════════════════════ -->
+  <div class="controls">
+    <span class="lbl">Filtr média</span>
+    <div class="filter-group" role="tablist">
+      <button class="filter-btn" data-filter="all" aria-pressed="true">Vše</button>
+      <button class="filter-btn" data-filter="P" aria-pressed="false">Tisk</button>
+      <button class="filter-btn" data-filter="D" aria-pressed="false">Digitál</button>
+      <button class="filter-btn" data-filter="S" aria-pressed="false">Prostor</button>
+    </div>
+    <span class="counter">
+      <span class="num" id="counter">0</span> <span class="total">/ <span id="total">0</span></span>
+    </span>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ═══ ITEMS (rendered by JS) ═══════════════════════════════════════ -->
+  <div id="items-root"></div>
+
+  <hr class="rule">
+
+  <!-- ═══ TONE OF COMMUNICATION ═══════════════════════════════════════ -->
+  <section class="tone-section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Očekávaný tón komunikace</h2>
+        <p class="section-fn">Pro každou dimenzi vyberte pozici, která nejlépe popisuje cílový charakter značky. Žádný konec stupnice není „lepší" než druhý — všechny páry jsou neutrální a oba póly mohou vést k dobrému designu.</p>
+      </div>
+      <div class="section-counter"><span id="tone-counter">0</span> / 6</div>
+    </div>
+    <div class="tone-rows" id="tone-rows"></div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ═══ NOTES ════════════════════════════════════════════════════════ -->
+  <div class="notes-area">
+    <label class="notes-label" for="notes">Poznámky a kontext</label>
+    <textarea id="notes" class="notes-textarea" placeholder="Cokoli, co k výběru chcete dodat — termíny, priority, otázky, kontext projektu..."></textarea>
+  </div>
+
+  <hr class="rule">
+
+  <!-- ═══ ACTIONS ══════════════════════════════════════════════════════ -->
+  <div class="actions">
+    <button class="btn btn-primary" id="btn-mail">Odeslat e-mailem</button>
+    <button class="btn" id="btn-print">Stáhnout jako PDF</button>
+    <button class="btn" id="btn-copy">Zkopírovat shrnutí</button>
+    <button class="btn" id="btn-reset">Resetovat</button>
+  </div>
+
+  <!-- ═══ FOOTER ═══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div>Matouš Kos / 2D / 3D designer</div>
+    <div>Checklist výstupů vizuální identity / v1.0</div>
+  </footer>
+</main>
+
+<div class="toast" id="toast">Zkopírováno do schránky</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════
+//  CONFIGURATION ─ vyměňte za skutečnou e-mailovou adresu
+// ════════════════════════════════════════════════════════════════════════
+const RECIPIENT_EMAIL = 'kos.matous1@gmail.com';
+
+// ════════════════════════════════════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════════════════════════════════════
+const LAYERS = [
+  { num: 1, title: 'Brand core',
+    fn: 'jádro identity, ze kterého se vše ostatní odvozuje' },
+  { num: 2, title: 'Operativní šablony',
+    fn: 'šablony pro každodenní práci týmu — papírnictví, prezentace, signatury' },
+  { num: 3, title: 'Akviziční touchpointy',
+    fn: 'kde značku potkává nový zákazník — reklama, kampaně, eventy' },
+  { num: 4, title: 'Konverzní a informační vrstva',
+    fn: 'kde zákazník hledá informace, orientuje se a nakupuje' },
+  { num: 5, title: 'Rozšířený brand svět',
+    fn: 'expressivní výstupy nad rámec standardu, které značku pozdvihnou' },
+];
+
+// Tón komunikace — semantic differential. Všechny páry jsou neutrální:
+// ani jeden pól není "lepší" volba, oba mohou vést k dobrému designu.
+const TONES = [
+  { id: 'formality',   left: 'Formální',       right: 'Neformální' },
+  { id: 'energy',      left: 'Klidný',         right: 'Dynamický' },
+  { id: 'temperature', left: 'Teplý',          right: 'Chladný' },
+  { id: 'density',     left: 'Minimalistický', right: 'Bohatý' },
+  { id: 'era',         left: 'Klasický',       right: 'Současný' },
+  { id: 'form',        left: 'Geometrický',    right: 'Organický' },
+];
+
+// l = layer, n = name, d = description, m = media (P=print, D=digital, S=spatial)
+const ITEMS = [
+  // ─── 1. Brand core ───────────────────────────────────────────────────
+  { l: 1, n: 'Logo / symbol značky', d: 'primární logo, varianty, proporce, ochranná zóna', m: 'P' },
+  { l: 1, n: 'Typografická soustava', d: 'firemní písma, hierarchie, licence', m: 'P' },
+  { l: 1, n: 'Barevný systém', d: 'paleta, pravidla, ekvivalenty CMYK / RGB / Pantone', m: 'P' },
+  { l: 1, n: 'Doplňkové grafické motivy', d: 'vizuální jazyk, vzory, dekorativní prvky', m: 'P' },
+  { l: 1, n: 'Maskot — návrh postavy', d: 'ilustrace charakteru a jeho varianty', m: 'P' },
+  { l: 1, n: 'Sada ikon', d: 'vlastní icon set odvozený z firemního stylu', m: 'D' },
+  { l: 1, n: 'Foto a ilustrační styl', d: 'guidelines pro fotografii, ilustrace, koláže', m: 'P' },
+  { l: 1, n: 'Tone of voice', d: 'verbální identita, slogan, principy psaní', m: 'P' },
+  { l: 1, n: 'Design manuál', d: 'komplexní brand book s pravidly užití', m: 'P' },
+
+  // ─── 2. Operativní šablony ───────────────────────────────────────────
+  { l: 2, n: 'Firemní papírnictví', d: 'vizitky, hlavičkové papíry, obálky, komplimentky', m: 'P' },
+  { l: 2, n: 'Razítko', d: 'klasické nebo elektronické', m: 'P' },
+  { l: 2, n: 'Šablony obchodních dokumentů', d: 'faktury, ceník, nabídka, formuláře, memo', m: 'P' },
+  { l: 2, n: 'E-mailové podpisy', d: 'hierarchie, podpisové bloky pro tým', m: 'D' },
+  { l: 2, n: 'Šablony prezentací', d: 'Keynote, PowerPoint, Google Slides', m: 'D' },
+  { l: 2, n: 'Šablony newsletterů', d: 'hlavička, layout, signatura, e-mailové kampaně', m: 'D' },
+  { l: 2, n: 'Šablony pro sociální sítě', d: 'post, story, cover, profilové foto', m: 'D' },
+  { l: 2, n: 'Šablony Office dokumentů', d: 'Word, Pages, Google Docs', m: 'D' },
+  { l: 2, n: 'UI základ', d: 'produktová rozhraní, komponenty, navigace', m: 'D' },
+
+  // ─── 3. Akviziční touchpointy ────────────────────────────────────────
+  { l: 3, n: 'Tištěná reklama', d: 'inzerce v časopisech a novinách', m: 'P' },
+  { l: 3, n: 'Plakáty a billboardy', d: 'venkovní reklama, citylighty, MHD', m: 'P' },
+  { l: 3, n: 'Letáky, pozvánky, propagační tiskoviny', d: 'direct distribuce, eventy, oznámení', m: 'P' },
+  { l: 3, n: 'Direct mail', d: 'adresná tištěná reklama, dárkový mailing', m: 'P' },
+  { l: 3, n: 'Online bannery a video reklama', d: 'display kampaně, intersticilály, advergaming', m: 'D' },
+  { l: 3, n: 'Sociální média kampaně', d: 'placené posty, story sety, reels', m: 'D' },
+  { l: 3, n: 'TV spoty a video reklama', d: 'reklamní spoty, sponzorské znělky', m: 'D' },
+  { l: 3, n: 'Motion graphics', d: 'animace, znělky pořadů, on-air grafika', m: 'D' },
+  { l: 3, n: 'Filmové a video titulky', d: 'titulkování, kreditní sekvence', m: 'D' },
+  { l: 3, n: 'AR filtry a rozšířená realita', d: 'Instagram / TikTok filtry, AR experiences', m: 'D' },
+  { l: 3, n: 'Videomapping a projekce', d: 'fasádní a prostorové projekce', m: 'S' },
+  { l: 3, n: 'Výstavnictví a stage design', d: 'veletrhy, showroomy, scéna', m: 'S' },
+  { l: 3, n: 'Event materiály a sponzoring', d: 'pozvánky, diplomy, brandové prvky pro eventy', m: 'S' },
+
+  // ─── 4. Konverzní a informační vrstva ────────────────────────────────
+  { l: 4, n: 'Firemní web', d: 'brochureware, prezentační stránky', m: 'D' },
+  { l: 4, n: 'E-shop', d: 'online prodej, košík, checkout flow', m: 'D' },
+  { l: 4, n: 'Servisní web a klientský portál', d: 'samoobsluha, podpora, dashboard', m: 'D' },
+  { l: 4, n: 'Kampaňové microsites', d: 'mikrostránky pro produkty a akce', m: 'D' },
+  { l: 4, n: 'Mobilní aplikace', d: 'iOS, Android, hybrid', m: 'D' },
+  { l: 4, n: 'E-learning a instruktážní videa', d: 'vzdělávací kontexty', m: 'D' },
+  { l: 4, n: 'Digitální kiosky', d: 'interaktivní terminály v prostoru', m: 'D' },
+  { l: 4, n: 'Katalogy a brožury', d: 'produktové, image, prodejní', m: 'P' },
+  { l: 4, n: 'Časopisy, výroční zprávy, knihy', d: 'dlouhé tištěné publikace', m: 'P' },
+  { l: 4, n: 'Prodejní listy, jídelní lístky, návody', d: 'krátké informační tiskoviny', m: 'P' },
+  { l: 4, n: 'Infografika', d: 'schémata, diagramy, mapové podklady, jízdní řády', m: 'P' },
+  { l: 4, n: 'Wayfinding a orientační značení', d: 'budovy, doprava, areály', m: 'S' },
+  { l: 4, n: 'Architektonická grafika', d: 'integrace do prostoru, supergrafika', m: 'S' },
+  { l: 4, n: 'POS materiály a produktové značení', d: 'regálové displeje, etikety, hangtagy', m: 'S' },
+
+  // ─── 5. Rozšířený brand svět ─────────────────────────────────────────
+  { l: 5, n: 'Maskot v digitálním prostředí', d: 'animované avatary, lottie, video', m: 'D' },
+  { l: 5, n: 'Komiksy a fanziny', d: 'narativní formáty pro brand story', m: 'P' },
+  { l: 5, n: 'Custom merch a limitované edice', d: 'brand items, kolekce, dárkové předměty', m: 'P' },
+  { l: 5, n: 'Interiérový branding', d: 'grafika a vzory v prostoru', m: 'S' },
+  { l: 5, n: 'Firemní oděvy a textil', d: 'uniformy, potisky, doplňky', m: 'S' },
+  { l: 5, n: 'Značení budov a fasády', d: 'storefront, exteriér, štíty, výstrče', m: 'S' },
+  { l: 5, n: 'Produktové tvarování', d: '3D shaping, design fyzického produktu', m: 'S' },
+  { l: 5, n: '3D ornamenty a detaily', d: 'embossing, reliéf, 3D prvky', m: 'S' },
+  { l: 5, n: 'Color a form blocking', d: 'strategické užití barev a tvarů v prostoru', m: 'S' },
+  { l: 5, n: 'Obalový design (packaging)', d: 'obaly, boxy, tašky, kontejnery', m: 'S' },
+];
+
+const MEDIA_LABEL = { P: 'Tisk', D: 'Digitál', S: 'Prostor' };
+
+// ════════════════════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════════════════════
+function escape(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function render() {
+  const root = document.getElementById('items-root');
+  let html = '';
+  LAYERS.forEach((layer, layerIdx) => {
+    const layerItems = ITEMS.map((it, i) => ({ it, i })).filter(x => x.it.l === layer.num);
+    html += `<section class="section" data-layer="${layer.num}">`;
+    html += `<div class="section-head">`;
+    html += `<div>`;
+    html += `<h2 class="section-title">${escape(layer.title)}</h2>`;
+    html += `<p class="section-fn">${escape(layer.fn)}</p>`;
+    html += `</div>`;
+    html += `<div class="section-counter"><span data-section-counter="${layer.num}">0</span> / ${layerItems.length}</div>`;
+    html += `</div>`;
+    html += `<div class="items">`;
+    layerItems.forEach(({ it, i }) => {
+      html += `<label class="item" data-media="${it.m}" data-layer="${it.l}">`;
+      html += `<input type="checkbox" data-id="${i}">`;
+      html += `<span class="item-content">`;
+      html += `<span class="item-text">`;
+      html += `<span class="item-name">${escape(it.n)}</span>`;
+      if (it.d) html += ` <span class="item-desc">— ${escape(it.d)}</span>`;
+      html += `</span>`;
+      html += `<span class="item-tag">${escape(MEDIA_LABEL[it.m])}</span>`;
+      html += `</span>`;
+      html += `</label>`;
+    });
+    html += `</div>`;
+    html += `</section>`;
+    if (layerIdx < LAYERS.length - 1) html += `<hr class="rule">`;
+  });
+  root.innerHTML = html;
+  document.getElementById('total').textContent = ITEMS.length;
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  STATE & COUNTERS
+// ════════════════════════════════════════════════════════════════════════
+function updateCounters() {
+  const checked = document.querySelectorAll('.item input:checked');
+  document.getElementById('counter').textContent = checked.length;
+  LAYERS.forEach(layer => {
+    const cnt = document.querySelectorAll(`.item[data-layer="${layer.num}"] input:checked`).length;
+    const inline = document.querySelector(`[data-section-counter="${layer.num}"]`);
+    if (inline) inline.textContent = cnt;
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  FILTERS
+// ════════════════════════════════════════════════════════════════════════
+function applyFilter(f) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.filter === f ? 'true' : 'false');
+  });
+  document.querySelectorAll('.item').forEach(el => {
+    if (f === 'all' || el.dataset.media === f) el.classList.remove('hidden');
+    else el.classList.add('hidden');
+  });
+  document.querySelectorAll('.section').forEach(sec => {
+    const visible = sec.querySelectorAll('.item:not(.hidden)').length;
+    sec.classList.toggle('hidden', visible === 0);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  TONE OF COMMUNICATION (semantic differential)
+// ════════════════════════════════════════════════════════════════════════
+function renderTones() {
+  const root = document.getElementById('tone-rows');
+  let html = '';
+  TONES.forEach(tone => {
+    html += `<div class="tone-row" data-tone="${tone.id}">`;
+    html += `<div class="tone-label left">${escape(tone.left)}</div>`;
+    html += `<div class="tone-track" data-tone-track="${tone.id}">`;
+    for (let v = -2; v <= 2; v++) {
+      const safeVal = v < 0 ? 'm' + Math.abs(v) : '' + v;
+      const inputId = `tone-${tone.id}-${safeVal}`;
+      html += `<input type="radio" name="tone-${tone.id}" id="${inputId}" value="${v}">`;
+      html += `<span class="tone-dot" data-value="${v}" title="${escape(toneDescriptor(tone, v))}"></span>`;
+    }
+    html += `</div>`;
+    html += `<div class="tone-label right">${escape(tone.right)}</div>`;
+    html += `</div>`;
+  });
+  root.innerHTML = html;
+
+  // Click handling on dots (since radios are visually hidden)
+  document.querySelectorAll('.tone-track').forEach(track => {
+    const toneId = track.dataset.toneTrack;
+    track.querySelectorAll('.tone-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const v = dot.dataset.value;
+        const radio = document.getElementById(`tone-${toneId}-${v < 0 ? 'm' + Math.abs(v) : v}`);
+        if (radio) radio.checked = true;
+        // Toggle visual state on dots
+        track.querySelectorAll('.tone-dot').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        updateToneCounter();
+      });
+    });
+  });
+}
+
+function updateToneCounter() {
+  let filled = 0;
+  TONES.forEach(tone => {
+    if (document.querySelector(`input[name="tone-${tone.id}"]:checked`)) filled++;
+  });
+  const el = document.getElementById('tone-counter');
+  if (el) el.textContent = filled;
+}
+
+function toneDescriptor(tone, value) {
+  if (value === -2) return 'výrazně ' + tone.left.toLowerCase();
+  if (value === -1) return 'spíše ' + tone.left.toLowerCase();
+  if (value === 0)  return 'vyvážený';
+  if (value === 1)  return 'spíše ' + tone.right.toLowerCase();
+  if (value === 2)  return 'výrazně ' + tone.right.toLowerCase();
+  return '–';
+}
+
+function toneVisual(value) {
+  // Returns visual ASCII like [●····] or [··●··]
+  const positions = ['·', '·', '·', '·', '·'];
+  positions[value + 2] = '●';
+  return '[' + positions.join('') + ']';
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  TEXT SUMMARY GENERATION
+// ════════════════════════════════════════════════════════════════════════
+function generateSummary() {
+  const date = new Date().toLocaleDateString('cs-CZ');
+  const client = document.getElementById('client-name').value.trim() || '(nevyplněno)';
+  const email = document.getElementById('client-email').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  let out = '';
+  out += 'VYPLNĚNÝ DOTAZNÍK K VIZUÁLNÍ IDENTITĚ\n';
+  out += '════════════════════════════════════════\n\n';
+  out += 'Klient / projekt: ' + client + '\n';
+  if (email) out += 'Kontakt: ' + email + '\n';
+  out += 'Datum:            ' + date + '\n\n';
+
+  // Vybrané výstupy — flat list bez dělení na vrstvy
+  const allChecked = ITEMS.map((it, i) => ({ it, i }))
+    .filter(x => document.querySelector(`.item input[data-id="${x.i}"]`).checked);
+
+  if (allChecked.length > 0) {
+    out += '\nVYBRANÉ VÝSTUPY\n';
+    out += '────────────────────────────────────────\n';
+    allChecked.forEach(({ it }) => {
+      out += '  [x]  ' + it.n + '  (' + MEDIA_LABEL[it.m] + ')\n';
+    });
+  }
+  const totalChecked = allChecked.length;
+
+  out += '\n════════════════════════════════════════\n';
+  out += 'Celkem vybráno: ' + totalChecked + ' z ' + ITEMS.length + ' položek\n';
+
+  // Tone of communication
+  const toneLines = [];
+  let maxPairLen = 0;
+  TONES.forEach(t => {
+    const pairLen = (t.left + ' / ' + t.right + ':').length;
+    if (pairLen > maxPairLen) maxPairLen = pairLen;
+  });
+  TONES.forEach(tone => {
+    const checked = document.querySelector(`input[name="tone-${tone.id}"]:checked`);
+    if (checked) {
+      const v = parseInt(checked.value, 10);
+      const pairText = tone.left + ' / ' + tone.right + ':';
+      toneLines.push('  ' + pairText.padEnd(maxPairLen + 2) + toneVisual(v) + '  ' + toneDescriptor(tone, v));
+    }
+  });
+  if (toneLines.length > 0) {
+    out += '\nTÓN KOMUNIKACE\n';
+    out += '────────────────────────────────────────\n';
+    toneLines.forEach(line => out += line + '\n');
+  }
+
+  if (notes) {
+    out += '\nPOZNÁMKY:\n';
+    out += '────────────────────────────────────────\n';
+    out += notes + '\n';
+  }
+
+  return out;
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  ACTIONS
+// ════════════════════════════════════════════════════════════════════════
+function handleMail() {
+  const summary = generateSummary();
+  const subject = 'Vyplněný dotazník k vizuální identitě';
+  const url = 'mailto:' + encodeURIComponent(RECIPIENT_EMAIL)
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(summary);
+  window.location.href = url;
+}
+
+function handlePrint() {
+  window.print();
+}
+
+function handleCopy() {
+  const summary = generateSummary();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(summary).then(
+      () => showToast('Zkopírováno do schránky'),
+      () => fallbackCopy(summary)
+    );
+  } else {
+    fallbackCopy(summary);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('Zkopírováno do schránky');
+  } catch (e) {
+    showToast('Kopírování selhalo');
+  }
+  document.body.removeChild(ta);
+}
+
+function handleReset() {
+  if (!confirm('Opravdu chcete resetovat celý výběr a poznámky?')) return;
+  document.querySelectorAll('.item input').forEach(cb => cb.checked = false);
+  document.querySelectorAll('input[type="radio"][name^="tone-"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.tone-dot.active').forEach(d => d.classList.remove('active'));
+  document.getElementById('notes').value = '';
+  document.getElementById('client-name').value = '';
+  document.getElementById('client-email').value = '';
+  applyFilter('all');
+  updateCounters();
+  updateToneCounter();
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════════════
+function init() {
+  render();
+  renderTones();
+  updateCounters();
+  updateToneCounter();
+
+  document.querySelectorAll('.item input').forEach(cb => {
+    cb.addEventListener('change', updateCounters);
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+  });
+
+  document.getElementById('btn-mail').addEventListener('click', handleMail);
+  document.getElementById('btn-print').addEventListener('click', handlePrint);
+  document.getElementById('btn-copy').addEventListener('click', handleCopy);
+  document.getElementById('btn-reset').addEventListener('click', handleReset);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
