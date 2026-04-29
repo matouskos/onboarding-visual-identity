@@ -606,7 +606,7 @@ const ITEMS = [
   // ─── 1. Brand core ───────────────────────────────────────────────────
   { l: 1, n: 'Logo / symbol značky', d: 'primární logo, varianty, proporce, ochranná zóna', m: 'P' },
   { l: 1, n: 'Typografická soustava', d: 'firemní písma, hierarchie, licence', m: 'P' },
-  { l: 1, n: 'Barevný systém', d: 'paleta, pravidla, ekvivalenty CMYK / RGB / Pantone', m: 'P' },
+  { l: 1, n: 'Barevná paleta', d: 'paleta, pravidla, ekvivalenty CMYK / RGB / Pantone', m: 'P' },
   { l: 1, n: 'Doplňkové grafické motivy', d: 'vizuální jazyk, vzory, dekorativní prvky', m: 'P' },
   { l: 1, n: 'Maskot — návrh postavy', d: 'ilustrace charakteru a jeho varianty', m: 'P' },
   { l: 1, n: 'Sada ikon', d: 'vlastní icon set odvozený z firemního stylu', m: 'D' },
@@ -617,8 +617,8 @@ const ITEMS = [
   // ─── 2. Operativní šablony ───────────────────────────────────────────
   { l: 2, n: 'Firemní papírnictví', d: 'vizitky, hlavičkové papíry, obálky, komplimentky', m: 'P' },
   { l: 2, n: 'Razítko', d: 'klasické nebo elektronické', m: 'P' },
-  { l: 2, n: 'Šablony obchodních dokumentů', d: 'faktury, ceník, nabídka, formuláře, memo', m: 'P' },
-  { l: 2, n: 'E-mailové podpisy', d: 'hierarchie, podpisové bloky pro tým', m: 'D' },
+  { l: 2, n: 'Šablony obchodních dokumentů', d: 'faktury, ceník, nabídka, formuláře', m: 'P' },
+  { l: 2, n: 'E-mailové podpisy', d: 'digitální vizitky, formátování', m: 'D' },
   { l: 2, n: 'Šablony prezentací', d: 'Keynote, PowerPoint, Google Slides', m: 'D' },
   { l: 2, n: 'Šablony newsletterů', d: 'hlavička, layout, signatura, e-mailové kampaně', m: 'D' },
   { l: 2, n: 'Šablony pro sociální sítě', d: 'post, story, cover, profilové foto', m: 'D' },
@@ -633,7 +633,7 @@ const ITEMS = [
   { l: 3, n: 'Online bannery a video reklama', d: 'display kampaně, intersticilály, advergaming', m: 'D' },
   { l: 3, n: 'Sociální média kampaně', d: 'placené posty, story sety, reels', m: 'D' },
   { l: 3, n: 'TV spoty a video reklama', d: 'reklamní spoty, sponzorské znělky', m: 'D' },
-  { l: 3, n: 'Motion graphics', d: 'animace, znělky pořadů, on-air grafika', m: 'D' },
+  { l: 3, n: 'Motion graphics', d: 'explainery, animace, znělky pořadů, on-air grafika', m: 'D' },
   { l: 3, n: 'Filmové a video titulky', d: 'titulkování, kreditní sekvence', m: 'D' },
   { l: 3, n: 'AR filtry a rozšířená realita', d: 'Instagram / TikTok filtry, AR experiences', m: 'D' },
   { l: 3, n: 'Videomapping a projekce', d: 'fasádní a prostorové projekce', m: 'S' },
@@ -641,16 +641,15 @@ const ITEMS = [
   { l: 3, n: 'Event materiály a sponzoring', d: 'pozvánky, diplomy, brandové prvky pro eventy', m: 'S' },
 
   // ─── 4. Konverzní a informační vrstva ────────────────────────────────
-  { l: 4, n: 'Firemní web', d: 'brochureware, prezentační stránky', m: 'D' },
+  { l: 4, n: 'Firemní web', d: 'onepager, strukturovaný web', m: 'D' },
   { l: 4, n: 'E-shop', d: 'online prodej, košík, checkout flow', m: 'D' },
   { l: 4, n: 'Servisní web a klientský portál', d: 'samoobsluha, podpora, dashboard', m: 'D' },
   { l: 4, n: 'Kampaňové microsites', d: 'mikrostránky pro produkty a akce', m: 'D' },
   { l: 4, n: 'Mobilní aplikace', d: 'iOS, Android, hybrid', m: 'D' },
   { l: 4, n: 'E-learning a instruktážní videa', d: 'vzdělávací kontexty', m: 'D' },
   { l: 4, n: 'Digitální kiosky', d: 'interaktivní terminály v prostoru', m: 'D' },
-  { l: 4, n: 'Katalogy a brožury', d: 'produktové, image, prodejní', m: 'P' },
+  { l: 4, n: 'Katalogy a brožury', d: 'produktové katalogy, jídelní lístky', m: 'P' },
   { l: 4, n: 'Časopisy, výroční zprávy, knihy', d: 'dlouhé tištěné publikace', m: 'P' },
-  { l: 4, n: 'Prodejní listy, jídelní lístky, návody', d: 'krátké informační tiskoviny', m: 'P' },
   { l: 4, n: 'Infografika', d: 'schémata, diagramy, mapové podklady, jízdní řády', m: 'P' },
   { l: 4, n: 'Wayfinding a orientační značení', d: 'budovy, doprava, areály', m: 'S' },
   { l: 4, n: 'Architektonická grafika', d: 'integrace do prostoru, supergrafika', m: 'S' },
@@ -659,13 +658,11 @@ const ITEMS = [
   // ─── 5. Rozšířený brand svět ─────────────────────────────────────────
   { l: 5, n: 'Maskot v digitálním prostředí', d: 'animované avatary, lottie, video', m: 'D' },
   { l: 5, n: 'Komiksy a fanziny', d: 'narativní formáty pro brand story', m: 'P' },
-  { l: 5, n: 'Custom merch a limitované edice', d: 'brand items, kolekce, dárkové předměty', m: 'P' },
+  { l: 5, n: 'Reklamní předměty a merch', d: 'dárkové předměty, fashion kolekce', m: 'P' },
   { l: 5, n: 'Interiérový branding', d: 'grafika a vzory v prostoru', m: 'S' },
   { l: 5, n: 'Firemní oděvy a textil', d: 'uniformy, potisky, doplňky', m: 'S' },
   { l: 5, n: 'Značení budov a fasády', d: 'storefront, exteriér, štíty, výstrče', m: 'S' },
-  { l: 5, n: 'Produktové tvarování', d: '3D shaping, design fyzického produktu', m: 'S' },
-  { l: 5, n: '3D ornamenty a detaily', d: 'embossing, reliéf, 3D prvky', m: 'S' },
-  { l: 5, n: 'Color a form blocking', d: 'strategické užití barev a tvarů v prostoru', m: 'S' },
+  { l: 5, n: 'Product design', d: 'design fyzického produktu, 3D tisk', m: 'S' },
   { l: 5, n: 'Obalový design (packaging)', d: 'obaly, boxy, tašky, kontejnery', m: 'S' },
 ];
 
